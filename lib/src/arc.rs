@@ -215,38 +215,38 @@ impl<S: Scalar> Transformed<S> for SvgArc<S> {
             // ma * transpose(ma) = [ J L ]
             //                      [ L K ]
             // L is calculated later (if the image is not a circle)
-            let J = ma[0].powi(2) + ma[2].powi(2);
-            let K = ma[1].powi(2) + ma[3].powi(2);
+            let j = ma[0].powi(2) + ma[2].powi(2);
+            let k = ma[1].powi(2) + ma[3].powi(2);
 
             // the discriminant of the characteristic polynomial of ma * transpose(ma)
-            let D = ((ma[0] - ma[3]).powi(2) + (ma[2] + ma[1]).powi(2))
+            let d = ((ma[0] - ma[3]).powi(2) + (ma[2] + ma[1]).powi(2))
                 * ((ma[0] + ma[3]).powi(2) + (ma[2] - ma[1]).powi(2));
 
             // the "mean eigenvalue"
-            let JK = (J + K) / S::TWO;
+            let jk = (j + k) / S::TWO;
 
             // check if the image is (almost) a circle
-            if D < S::EPSILON * JK {
+            if d < S::EPSILON * jk {
                 // if it is
-                (Angle::zero(), Vector::splat(JK.sqrt()))
+                (Angle::zero(), Vector::splat(jk.sqrt()))
             } else {
                 // if it is not a circle
-                let L = ma[0] * ma[1] + ma[2] * ma[3];
+                let l = ma[0] * ma[1] + ma[2] * ma[3];
 
-                let D = D.sqrt();
+                let d = d.sqrt();
 
                 // {l1,l2} = the two eigen values of ma * transpose(ma)
-                let l1 = JK + D / S::TWO;
-                let l2 = JK - D / S::TWO;
+                let l1 = jk + d / S::TWO;
+                let l2 = jk - d / S::TWO;
                 // the x - axis - rotation angle is the argument of the l1 - eigenvector
-                let ax = if L.abs() < S::EPSILON && (l1 - K).abs() < S::EPSILON {
+                let ax = if l.abs() < S::EPSILON && (l1 - k).abs() < S::EPSILON {
                     Angle::frac_pi_2()
                 } else {
                     Angle::radians(
-                        (if L.abs() > (l1 - K).abs() {
-                            (l1 - J) / L
+                        (if l.abs() > (l1 - k).abs() {
+                            (l1 - j) / l
                         } else {
-                            L / (l1 - K)
+                            l / (l1 - k)
                         })
                         .atan(),
                     )
