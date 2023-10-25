@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: stable
           override: true
           profile: minimal
           components: llvm-tools-preview
