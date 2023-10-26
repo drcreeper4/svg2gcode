@@ -111,9 +111,21 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         let mut transforms = vec![];
 
         let view_box_attr = node.attribute("viewBox");
-        if view_box_attr == Some("") {
-            let view_box_attr = format!("0 0 {} {}", node.attribute("width").unwrap(), node.attribute("height").unwrap());
+        println!("TEST-print, {:?}, {:?}, {:?}", view_box_attr, node.attribute("width"), node.attribute("height"));
+        /*
+        if view_box_attr == None {
+            println!("TEST-print2");
+            let view_box_attr = Some(format!("0 0 {} {}", node.attribute("width").unwrap(), node.attribute("height").unwrap()));
         }
+        */
+        let mut b : String = "".to_string();
+        let view_box_attr: Option<&str> = if view_box_attr == None {
+            b = format!("0 0 {:?} {:?}", node.attribute("width"), node.attribute("height"));
+            Some(b.as_str())
+        }
+        else {
+            view_box_attr
+        };
         let view_box = view_box_attr
             .map(ViewBox::from_str)
             .transpose()
