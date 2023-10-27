@@ -111,16 +111,17 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         let mut transforms = vec![];
 
         let view_box_attr = node.attribute("viewBox");
-        println!("TEST-print, {:?}, {:?}, {:?}", view_box_attr, node.attribute("width"), node.attribute("height"));
-        /*
-        if view_box_attr == None {
-            println!("TEST-print2");
-            let view_box_attr = Some(format!("0 0 {} {}", node.attribute("width").unwrap(), node.attribute("height").unwrap()));
-        }
-        */
-        let mut b : String = "".to_string();
-        let view_box_attr: Option<&str> = if view_box_attr == None {
-            b = format!("0 0 {:?} {:?}", node.attribute("width"), node.attribute("height"));
+        let mut b: String = "".to_string();
+        let view_box_attr: Option<&str> = if view_box_attr == None && node.attribute("width") != None {
+            let string_list = vec!["0 0".to_string(), node.attribute("width").unwrap().to_string(), node.attribute("height").unwrap().to_string()];
+            b = string_list.join(" ").chars()
+                .map(|x| match x {
+                    'A'..='Z' => ' ', 
+                    'a'..='z' => ' ',
+                    _ => x
+                }).collect();
+            //b = format!("0 0 {:?} {:?}", node.attribute("width").unwrap(), node.attribute("height").unwrap());
+            //println!("guessed viewBox is: {:?}", Some(b.as_str()));
             Some(b.as_str())
         }
         else {
