@@ -139,6 +139,10 @@ mod test {
         let json = r#"
         {
             "conversion": {
+              "dimensions": [
+                null,
+                null
+              ]
               "tolerance": 0.002,
               "feedrate": 300.0,
               "dpi": 96.0
