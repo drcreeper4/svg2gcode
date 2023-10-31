@@ -860,7 +860,7 @@ async function __wbg_init(input) {
     if (wasm !== undefined) return wasm;
 
     if (typeof input === 'undefined') {
-        input = new URL('svg2gcode-web-a61650e6e6646d7a_bg.wasm', import.meta.url);
+        input = new URL('svg2gcode-web-d47b77999393775b_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
