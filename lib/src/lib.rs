@@ -51,7 +51,7 @@ mod test {
             None,
             None,
         );
-        let program = converter::svg2program(&document, &config, options, machine);
+        let program = converter::svg2program(&document, &config, machine);
 
         let mut acc = String::new();
         format_gcode_fmt(&program, FormatOptions::default(), &mut acc).unwrap();

@@ -10,7 +10,7 @@ use std::{
     path::PathBuf,
 };
 use structopt::StructOpt;
-use svgtypes::LengthListParser;
+use svgtypes::{Length, LengthListParser};
 
 use svg2gcode::{svg2program, ConversionOptions, Machine, Settings, SupportedFunctionality};
 
@@ -79,6 +79,26 @@ struct Opt {
     /// Useful for streaming g-code
     checksums: Option<bool>,
 }
+fn dimensions_parser(mut dimensions: [Option<Length>; 2], dimensions_str: Option<String>) -> [Option<Length>; 2] {
+    dimensions_str.unwrap()
+        .split(',')
+        .map(|dimension_str| {
+            if dimension_str.is_empty() {
+                None
+            } else {
+                LengthListParser::from(dimension_str)
+                .next()
+                    .transpose()
+                    .expect("could not parse dimension")
+            }
+        })
+        .take(2)
+        .enumerate()
+        .for_each(|(i, dimension_origin)| {
+            dimensions[i] = dimension_origin;
+        });
+    dimensions
+}
 
 fn main() -> io::Result<()> {
     if env::var("RUST_LOG").is_err() {
@@ -100,6 +120,17 @@ fn main() -> io::Result<()> {
             conversion.dpi = opt.dpi.unwrap_or(conversion.dpi);
             conversion.feedrate = opt.feedrate.unwrap_or(conversion.feedrate);
             conversion.tolerance = opt.tolerance.unwrap_or(conversion.tolerance);
+
+            if let dimensions_str = opt.dimensions {
+                dimensions_parser(conversion.dimensions, dimensions_str);
+            }
+            else if let dimensions_str = Some(format!("{:?} {:?}",
+                                                                  conversion.dimensions[0].as_ref().unwrap(),
+                                                                  conversion.dimensions[1].as_ref().unwrap())
+                                                             )
+                                                        {
+                dimensions_parser(conversion.dimensions, dimensions_str);
+            }
         }
         {
             let machine = &mut settings.machine;
@@ -159,31 +190,6 @@ fn main() -> io::Result<()> {
             return File::create(export_path)?.write_all(&config_json_bytes);
         }
     }
-
-    let options = {
-        let mut dimensions = [None, None];
-
-        if let Some(dimensions_str) = opt.dimensions {
-            dimensions_str
-                .split(',')
-                .map(|dimension_str| {
-                    if dimension_str.is_empty() {
-                        None
-                    } else {
-                        LengthListParser::from(dimension_str)
-                            .next()
-                            .transpose()
-                            .expect("could not parse dimension")
-                    }
-                })
-                .take(2)
-                .enumerate()
-                .for_each(|(i, dimension_origin)| {
-                    dimensions[i] = dimension_origin;
-                });
-        }
-        ConversionOptions { dimensions }
-    };
 
     let input = match opt.file {
         Some(filename) => {
@@ -270,7 +276,7 @@ fn main() -> io::Result<()> {
 
     let document = roxmltree::Document::parse(&input).unwrap();
 
-    let program = svg2program(&document, &settings.conversion, options, machine);
+    let program = svg2program(&document, &settings.conversion, machine);
 
     if let Some(out_path) = opt.out {
         format_gcode_io(

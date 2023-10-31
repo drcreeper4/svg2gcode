@@ -30,6 +30,11 @@ const POLYLINE_TAG_NAME: &str = "polyline";
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ConversionConfig {
+    /// Width and height override
+    ///
+    /// Useful when an SVG does not have a set width and height or you want to override it.
+    #[cfg_attr(feature = "serde", serde(with = "length_serde"))]
+    pub dimensions: [Option<Length>; 2],
     /// Curve interpolation tolerance in millimeters
     pub tolerance: f64,
     /// Feedrate in millimeters / minute
@@ -48,6 +53,7 @@ const fn zero_origin() -> [Option<f64>; 2] {
 impl Default for ConversionConfig {
     fn default() -> Self {
         Self {
+            dimensions: [None, None],
             tolerance: 0.002,
             feedrate: 300.0,
             dpi: 96.0,
@@ -74,7 +80,6 @@ struct ConversionVisitor<'a, T: Turtle> {
     terrarium: Terrarium<T>,
     name_stack: Vec<String>,
     config: &'a ConversionConfig,
-    options: ConversionOptions,
 }
 
 impl<'a, 'input: 'a> ConversionVisitor<'a, GCodeTurtle<'input>> {
@@ -165,8 +170,8 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         }
 
         let dimensions_override = [
-            self.options.dimensions[0].map(|dim_x| length_to_mm(dim_x, self.config.dpi, scale_w)),
-            self.options.dimensions[1].map(|dim_y| length_to_mm(dim_y, self.config.dpi, scale_h)),
+            self.config.dimensions[0].map(|dim_x| length_to_mm(dim_x, self.config.dpi, scale_w)),
+            self.config.dimensions[1].map(|dim_y| length_to_mm(dim_y, self.config.dpi, scale_h)),
         ];
 
         match (dimensions_override, dimensions) {
@@ -268,14 +273,12 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
 pub fn svg2program<'a, 'input: 'a>(
     doc: &'a Document,
     config: &ConversionConfig,
-    options: ConversionOptions,
     machine: Machine<'input>,
 ) -> Vec<Token<'input>> {
     let bounding_box = {
         let mut visitor = ConversionVisitor {
             terrarium: Terrarium::new(PreprocessTurtle::default()),
             config,
-            options: options.clone(),
             name_stack: vec![],
         };
 
@@ -305,7 +308,6 @@ pub fn svg2program<'a, 'input: 'a>(
             program: vec![],
         }),
         config,
-        options,
         name_stack: vec![],
     };
     conversion_visitor
