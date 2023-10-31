@@ -58,10 +58,6 @@ fn App(_props: &()) -> Html {
             }
 
             for svg in app_store.svgs.iter() {
-                let options = ConversionOptions {
-                    dimensions: svg.dimensions,
-                };
-
                 let machine = Machine::new(
                     app_store.settings.machine.supported_functionality.clone(),
                     app_store
@@ -100,7 +96,7 @@ fn App(_props: &()) -> Html {
                 let document = Document::parse(svg.content.as_str()).unwrap();
 
                 let program =
-                    svg2program(&document, &app_store.settings.conversion, options, machine);
+                    svg2program(&document, &app_store.settings.conversion, machine);
 
                 let filepath = if app_store.svgs.len() > 1 {
                     PathBuf::from("svg2gcode_output")

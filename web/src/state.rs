@@ -10,6 +10,7 @@ use yewdux::store::Store;
 #[derive(Debug, Clone, PartialEq, Store)]
 #[store]
 pub struct FormState {
+    pub dimensions: [Option<Length>; 2],
     pub tolerance: Result<f64, ParseFloatError>,
     pub feedrate: Result<f64, ParseFloatError>,
     pub origin: [Option<Result<f64, ParseFloatError>>; 2],
@@ -44,6 +45,10 @@ impl<'a> TryInto<Settings> for &'a FormState {
     fn try_into(self) -> Result<Settings, Self::Error> {
         Ok(Settings {
             conversion: ConversionConfig {
+                dimensions: [
+                    self.dimensions[0].clone(),
+                    self.dimensions[1].clone(),
+                ],
                 tolerance: self.tolerance.clone()?,
                 feedrate: self.feedrate.clone()?,
                 dpi: self.dpi.clone()?,
@@ -88,6 +93,10 @@ impl<'a> TryInto<Settings> for &'a FormState {
 impl From<&Settings> for FormState {
     fn from(settings: &Settings) -> Self {
         Self {
+            dimensions: [
+                settings.conversion.dimensions[0],
+                settings.conversion.dimensions[1],
+            ],
             tolerance: Ok(settings.conversion.tolerance),
             feedrate: Ok(settings.conversion.feedrate),
             circular_interpolation: settings
