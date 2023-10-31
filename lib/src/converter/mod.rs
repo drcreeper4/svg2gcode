@@ -62,19 +62,6 @@ impl Default for ConversionConfig {
     }
 }
 
-/// Options are specific to this conversion.
-///
-/// This is separate from [ConversionConfig] to support bulk processing in the web interface.
-#[derive(Debug, Clone, PartialEq, Default)]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-pub struct ConversionOptions {
-    /// Width and height override
-    ///
-    /// Useful when an SVG does not have a set width and height or you want to override it.
-    #[cfg_attr(feature = "serde", serde(with = "length_serde"))]
-    pub dimensions: [Option<Length>; 2],
-}
-
 #[derive(Debug)]
 struct ConversionVisitor<'a, T: Turtle> {
     terrarium: Terrarium<T>,
@@ -452,15 +439,15 @@ mod test {
     #[test]
     #[cfg(feature = "serde")]
     fn serde_conversion_options_is_correct() {
-        let default_struct = ConversionOptions::default();
-        let default_json = "{\"dimensions\":[null,null]}";
+        let default_struct = ConversionConfig::default();
+        let default_json = "{\"dimensions\":[null,null],\"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
 
         assert_eq!(
             serde_json::to_string(&default_struct).unwrap(),
             default_json
         );
         assert_eq!(
-            serde_json::from_str::<ConversionOptions>(default_json).unwrap(),
+            serde_json::from_str::<ConversionConfig>(default_json).unwrap(),
             default_struct
         );
     }
@@ -468,16 +455,16 @@ mod test {
     #[test]
     #[cfg(feature = "serde")]
     fn serde_conversion_options_with_single_dimension_is_correct() {
-        let mut r#struct = ConversionOptions::default();
+        let mut r#struct = ConversionConfig::default();
         r#struct.dimensions[0] = Some(Length {
             number: 4.,
             unit: LengthUnit::Mm,
         });
-        let json = "{\"dimensions\":[{\"number\":4.0,\"unit\":\"Mm\"},null]}";
+        let json = "{\"dimensions\":[{\"number\":4.0,\"unit\":\"Mm\"},null],\"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
 
         assert_eq!(serde_json::to_string(&r#struct).unwrap(), json);
         assert_eq!(
-            serde_json::from_str::<ConversionOptions>(json).unwrap(),
+            serde_json::from_str::<ConversionConfig>(json).unwrap(),
             r#struct
         );
     }
@@ -485,7 +472,7 @@ mod test {
     #[test]
     #[cfg(feature = "serde")]
     fn serde_conversion_options_with_both_dimensions_is_correct() {
-        let mut r#struct = ConversionOptions::default();
+        let mut r#struct = ConversionConfig::default();
         r#struct.dimensions = [
             Some(Length {
                 number: 4.,
@@ -497,11 +484,11 @@ mod test {
             }),
         ];
         let json =
-            "{\"dimensions\":[{\"number\":4.0,\"unit\":\"Mm\"},{\"number\":10.5,\"unit\":\"In\"}]}";
+            "{\"dimensions\":[{\"number\":4.0,\"unit\":\"Mm\"},{\"number\":10.5,\"unit\":\"In\"}],\"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
 
         assert_eq!(serde_json::to_string(&r#struct).unwrap(), json);
         assert_eq!(
-            serde_json::from_str::<ConversionOptions>(json).unwrap(),
+            serde_json::from_str::<ConversionConfig>(json).unwrap(),
             r#struct
         );
     }
