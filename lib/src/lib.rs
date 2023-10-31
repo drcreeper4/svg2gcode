@@ -142,7 +142,7 @@ mod test {
               "dimensions": [
                 null,
                 null
-              ]
+              ],
               "tolerance": 0.002,
               "feedrate": 300.0,
               "dpi": 96.0
@@ -176,7 +176,7 @@ mod test {
               "dimensions": [
                 null,
                 null
-              ]
+              ],
               "tolerance": 0.002,
               "feedrate": 300.0,
               "dpi": 96.0
@@ -205,7 +205,7 @@ mod test {
               "dimensions": [
                 null,
                 null
-              ]
+              ],
               "tolerance": 0.002,
               "feedrate": 300.0,
               "dpi": 96.0
