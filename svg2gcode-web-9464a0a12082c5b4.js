@@ -801,24 +801,24 @@ function __wbg_get_imports() {
         const ret = wasm.memory;
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper761 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 391, __wbg_adapter_20);
+    imports.wbg.__wbindgen_closure_wrapper1064 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 623, __wbg_adapter_20);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper763 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 391, __wbg_adapter_23);
+    imports.wbg.__wbindgen_closure_wrapper1066 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 623, __wbg_adapter_23);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper1561 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 830, __wbg_adapter_26);
+    imports.wbg.__wbindgen_closure_wrapper1558 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 829, __wbg_adapter_26);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper1792 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 909, __wbg_adapter_29);
+    imports.wbg.__wbindgen_closure_wrapper1789 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 908, __wbg_adapter_29);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper1843 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 937, __wbg_adapter_32);
+    imports.wbg.__wbindgen_closure_wrapper1840 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 936, __wbg_adapter_32);
         return addHeapObject(ret);
     };
 
@@ -860,7 +860,7 @@ async function __wbg_init(input) {
     if (wasm !== undefined) return wasm;
 
     if (typeof input === 'undefined') {
-        input = new URL('svg2gcode-web-2852b06a6a6ce0f6_bg.wasm', import.meta.url);
+        input = new URL('svg2gcode-web-9464a0a12082c5b4_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
