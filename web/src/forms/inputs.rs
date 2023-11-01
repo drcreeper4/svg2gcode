@@ -79,4 +79,16 @@ form_input! {
         origin => 1,
         settings.conversion.origin => 1,
     }
+    DimensionsX {
+        "Dimension X",
+        "X-axis dimension for the print surface (Mm)",
+        dimensions => 0,
+        settings.conversion.dimensions => 0,
+    }
+    DimensionsY {
+        "Dimension Y",
+        "Y-axis dimension for the print surface (Mm)",
+        dimensions => 0,
+        settings.conversion.dimensions => 1,
+    }
 }

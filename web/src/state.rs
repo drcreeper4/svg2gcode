@@ -10,7 +10,8 @@ use yewdux::store::Store;
 #[derive(Debug, Clone, PartialEq, Store)]
 #[store]
 pub struct FormState {
-    pub dimensions: [Option<Result<Length, ParseFloatError>>; 2],
+    pub dimensions: [Option<Result<f64, ParseFloatError>>; 2],
+    //pub dimensions: [f64; 2],
     pub tolerance: Result<f64, ParseFloatError>,
     pub feedrate: Result<f64, ParseFloatError>,
     pub origin: [Option<Result<f64, ParseFloatError>>; 2],
@@ -46,8 +47,17 @@ impl<'a> TryInto<Settings> for &'a FormState {
         Ok(Settings {
             conversion: ConversionConfig {
                 dimensions: [
-                    self.dimensions[0].clone().transpose()?,
-                    self.dimensions[1].clone().transpose()?,
+                    Some(Length {
+                        number: self.dimensions[0].clone().unwrap().unwrap(),
+                        unit: svgtypes::LengthUnit::Mm,
+                    }),
+                    
+                    Some(Length {
+                        number: self.dimensions[0].clone().unwrap().unwrap(),
+                        unit: svgtypes::LengthUnit::Mm,
+                    }),
+                    //self.dimensions[0].clone().transpose()?,
+                    //self.dimensions[1].clone().transpose()?,
                 ],
                 tolerance: self.tolerance.clone()?,
                 feedrate: self.feedrate.clone()?,
@@ -94,8 +104,8 @@ impl From<&Settings> for FormState {
     fn from(settings: &Settings) -> Self {
         Self {
             dimensions: [
-                settings.conversion.dimensions[0].map(Ok),
-                settings.conversion.dimensions[1].map(Ok),
+                Some(settings.conversion.dimensions[0].unwrap().number).map(Ok),
+                Some(settings.conversion.dimensions[1].unwrap().number).map(Ok),
             ],
             tolerance: Ok(settings.conversion.tolerance),
             feedrate: Ok(settings.conversion.feedrate),
