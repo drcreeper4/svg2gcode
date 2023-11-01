@@ -11,7 +11,7 @@ use g_code::{
 use js_sys::Date;
 use log::Level;
 use roxmltree::Document;
-use svg2gcode::{svg2program, ConversionConfig, Machine};
+use svg2gcode::{svg2program, Machine};
 use yew::prelude::*;
 
 mod forms;

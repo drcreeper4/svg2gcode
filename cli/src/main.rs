@@ -12,7 +12,7 @@ use std::{
 use structopt::StructOpt;
 use svgtypes::{Length, LengthListParser};
 
-use svg2gcode::{svg2program, ConversionConfig, Machine, Settings, SupportedFunctionality};
+use svg2gcode::{svg2program, Machine, Settings, SupportedFunctionality};
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "svg2gcode", author, about)]

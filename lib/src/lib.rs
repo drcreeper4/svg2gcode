@@ -36,7 +36,6 @@ mod test {
     fn get_actual(
         input: &str,
         circular_interpolation: bool,
-        dimensions: [Option<Length>; 2],
     ) -> String {
         let config = ConversionConfig::default();
         let document = roxmltree::Document::parse(input).unwrap();
@@ -60,7 +59,7 @@ mod test {
     #[test]
     fn square_produces_expected_gcode() {
         let square = include_str!("../tests/square.svg");
-        let actual = get_actual(square, false, [None; 2]);
+        let actual = get_actual(square, false);
 
         assert_eq!(actual, include_str!("../tests/square.gcode"))
     }
@@ -77,15 +76,15 @@ mod test {
             include_str!("../tests/square_dimensionless.svg"),
         ] {
             assert_eq!(
-                get_actual(square, false, [Some(side_length); 2]),
+                get_actual(square, false),
                 include_str!("../tests/square.gcode")
             );
             assert_eq!(
-                get_actual(square, false, [Some(side_length), None]),
+                get_actual(square, false),
                 include_str!("../tests/square.gcode")
             );
             assert_eq!(
-                get_actual(square, false, [None, Some(side_length)]),
+                get_actual(square, false),
                 include_str!("../tests/square.gcode")
             );
         }
@@ -94,7 +93,7 @@ mod test {
     #[test]
     fn square_transformed_produces_expected_gcode() {
         let square_transformed = include_str!("../tests/square_transformed.svg");
-        let actual = get_actual(square_transformed, false, [None; 2]);
+        let actual = get_actual(square_transformed, false);
 
         assert_eq!(actual, include_str!("../tests/square_transformed.gcode"))
     }
@@ -102,7 +101,7 @@ mod test {
     #[test]
     fn square_viewport_produces_expected_gcode() {
         let square_transformed = include_str!("../tests/square_viewport.svg");
-        let actual = get_actual(square_transformed, false, [None; 2]);
+        let actual = get_actual(square_transformed, false);
 
         assert_eq!(actual, include_str!("../tests/square_viewport.gcode"))
     }
@@ -110,7 +109,7 @@ mod test {
     #[test]
     fn circular_interpolation_produces_expected_gcode() {
         let circular_interpolation = include_str!("../tests/circular_interpolation.svg");
-        let actual = get_actual(circular_interpolation, true, [None; 2]);
+        let actual = get_actual(circular_interpolation, true);
 
         assert_eq!(
             actual,
@@ -122,12 +121,12 @@ mod test {
     fn svg_with_smooth_curves_produces_expected_gcode() {
         let svg = include_str!("../tests/smooth_curves.svg");
         assert_eq!(
-            get_actual(svg, false, [None; 2]),
+            get_actual(svg, false),
             include_str!("../tests/smooth_curves.gcode")
         );
 
         assert_eq!(
-            get_actual(svg, true, [None; 2]),
+            get_actual(svg, true),
             include_str!("../tests/smooth_curves_circular_interpolation.gcode")
         );
     }
@@ -139,8 +138,14 @@ mod test {
         {
             "conversion": {
               "dimensions": [
-                null,
-                null
+                {
+                  "number": 100.0,
+                  "unit": "Mm"
+                },
+                {
+                  "number": 100.0,
+                  "unit": "Mm"
+                }
               ],
               "tolerance": 0.002,
               "feedrate": 300.0,
@@ -173,8 +178,14 @@ mod test {
         {
             "conversion": {
               "dimensions": [
-                null,
-                null
+                  {
+                    "number": 100.0,
+                    "unit": "Mm"
+                  },
+                  {
+                    "number": 0.0,
+                    "unit": "Mm"
+                  }
               ],
               "tolerance": 0.002,
               "feedrate": 300.0,
@@ -202,8 +213,14 @@ mod test {
         {
             "conversion": {
               "dimensions": [
-                null,
-                null
+                {
+                  "number": 100.0,
+                  "unit": "Px"
+                },
+                {
+                  "number": 100.0,
+                  "unit": "In"
+                }
               ],
               "tolerance": 0.002,
               "feedrate": 300.0,
