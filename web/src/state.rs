@@ -10,8 +10,8 @@ use yewdux::store::Store;
 #[derive(Debug, Clone, PartialEq, Store)]
 #[store]
 pub struct FormState {
-    pub dimensions: [Option<Result<f64, ParseFloatError>>; 2],
-    //pub dimensions: [f64; 2],
+    pub dimensionsnumber: [Option<Result<f64, ParseFloatError>>; 2],
+    pub dimensionsunit: [Option<Result<svgtypes::LengthUnit, ParseFloatError>>; 2],
     pub tolerance: Result<f64, ParseFloatError>,
     pub feedrate: Result<f64, ParseFloatError>,
     pub origin: [Option<Result<f64, ParseFloatError>>; 2],
@@ -46,18 +46,13 @@ impl<'a> TryInto<Settings> for &'a FormState {
     fn try_into(self) -> Result<Settings, Self::Error> {
         Ok(Settings {
             conversion: ConversionConfig {
-                dimensions: [
-                    Some(Length {
-                        number: self.dimensions[0].clone().unwrap().unwrap(),
-                        unit: svgtypes::LengthUnit::Mm,
-                    }),
-                    
-                    Some(Length {
-                        number: self.dimensions[0].clone().unwrap().unwrap(),
-                        unit: svgtypes::LengthUnit::Mm,
-                    }),
-                    //self.dimensions[0].clone().transpose()?,
-                    //self.dimensions[1].clone().transpose()?,
+                dimensionsnumber: [
+                    self.dimensionsnumber[0].clone().transpose()?,
+                    self.dimensionsnumber[1].clone().transpose()?,
+                ],
+                dimensionsunit: [
+                    self.dimensionsunit[0].clone().transpose()?,
+                    self.dimensionsunit[1].clone().transpose()?,
                 ],
                 tolerance: self.tolerance.clone()?,
                 feedrate: self.feedrate.clone()?,
@@ -103,9 +98,13 @@ impl<'a> TryInto<Settings> for &'a FormState {
 impl From<&Settings> for FormState {
     fn from(settings: &Settings) -> Self {
         Self {
-            dimensions: [
+            dimensionsnumber: [
                 Some(settings.conversion.dimensions[0].unwrap().number).map(Ok),
                 Some(settings.conversion.dimensions[1].unwrap().number).map(Ok),
+            ],
+            dimensionsunit: [
+                Some(settings.conversion.dimensions[0].unwrap().unit).map(Ok),
+                Some(settings.conversion.dimensions[1].unwrap().unit).map(Ok),
             ],
             tolerance: Ok(settings.conversion.tolerance),
             feedrate: Ok(settings.conversion.feedrate),

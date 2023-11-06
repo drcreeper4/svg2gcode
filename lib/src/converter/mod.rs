@@ -11,7 +11,7 @@ use roxmltree::{Document, Node};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 use svgtypes::{
-    Length, LengthListParser, PathParser, PathSegment, PointsParser, TransformListParser,
+    Length, LengthUnit, LengthListParser, PathParser, PathSegment, PointsParser, TransformListParser,
     TransformListToken, ViewBox,
 };
 
@@ -33,8 +33,10 @@ pub struct ConversionConfig {
     /// Width and height override
     ///
     /// Useful when an SVG does not have a set width and height or you want to override it.
+    pub dimensionsnumber: [Option<f64>; 2],
+    /// Unit for dimensionsnumber (Mm, In, etc.)
     #[cfg_attr(feature = "serde", serde(with = "length_serde"))]
-    pub dimensions: [Option<Length>; 2],
+    pub dimensionsunit: [Option<LengthUnit>; 2],
     /// Curve interpolation tolerance in millimeters
     pub tolerance: f64,
     /// Feedrate in millimeters / minute
@@ -53,7 +55,8 @@ const fn zero_origin() -> [Option<f64>; 2] {
 impl Default for ConversionConfig {
     fn default() -> Self {
         Self {
-            dimensions: [None, None],
+            dimensionsnumber: [Some(100.0), Some(100.0)],
+            dimensionsunit: [Some(LengthUnit::Mm), Some(LengthUnit::Mm)],
             tolerance: 0.002,
             feedrate: 300.0,
             dpi: 96.0,
@@ -157,8 +160,8 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         }
 
         let dimensions_override = [
-            self.config.dimensions[0].map(|dim_x| length_to_mm(dim_x, self.config.dpi, scale_w)),
-            self.config.dimensions[1].map(|dim_y| length_to_mm(dim_y, self.config.dpi, scale_h)),
+            self.config.dimensionsnumber[0].map(|dim_x| length_to_mm(Length {number: dim_x, unit: self.config.dimensionsunit[0].unwrap()}, self.config.dpi, scale_w)),
+            self.config.dimensionsnumber[1].map(|dim_y| length_to_mm(Length {number: dim_y, unit: self.config.dimensionsunit[1].unwrap()}, self.config.dpi, scale_h)),
         ];
 
         match (dimensions_override, dimensions) {
@@ -440,7 +443,8 @@ mod test {
     #[cfg(feature = "serde")]
     fn serde_conversion_options_is_correct() {
         let default_struct = ConversionConfig::default();
-        let default_json = "{\"dimensions\":[null,null],\"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
+        let default_json = "{\"dimensionsnumber\":[null,null],\"dimensionsunit\":[null,null],
+                                   \"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
 
         assert_eq!(
             serde_json::to_string(&default_struct).unwrap(),
@@ -460,7 +464,8 @@ mod test {
             number: 4.,
             unit: LengthUnit::Mm,
         });
-        let json = "{\"dimensions\":[{\"number\":4.0,\"unit\":\"Mm\"},null],\"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
+        let json = "{\"dimensionsnumber\":[100.0,null],\"dimensionsunit\":[\"Mm\",null],
+                           \"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
 
         assert_eq!(serde_json::to_string(&r#struct).unwrap(), json);
         assert_eq!(
@@ -483,8 +488,8 @@ mod test {
                 unit: LengthUnit::In,
             }),
         ];
-        let json =
-            "{\"dimensions\":[{\"number\":4.0,\"unit\":\"Mm\"},{\"number\":10.5,\"unit\":\"In\"}],\"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
+        let json = "{\"dimensionsnumber\":[10.0,1000.0],\"dimensionsunit\":[\"In\",\"Px\"],
+                           \"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
 
         assert_eq!(serde_json::to_string(&r#struct).unwrap(), json);
         assert_eq!(

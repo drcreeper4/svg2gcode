@@ -137,15 +137,13 @@ mod test {
         let json = r#"
         {
             "conversion": {
-              "dimensions": [
-                {
-                  "number": 100.0,
-                  "unit": "Mm"
-                },
-                {
-                  "number": 100.0,
-                  "unit": "Mm"
-                }
+              "dimensionsnumber": [\
+                  100.0,
+                  100.0
+              ],
+              "dimensionsunit": [
+                  "Mm",
+                  "Mm"  
               ],
               "tolerance": 0.002,
               "feedrate": 300.0,
@@ -177,15 +175,13 @@ mod test {
         let json = r#"
         {
             "conversion": {
-              "dimensions": [
-                  {
-                    "number": 100.0,
-                    "unit": "Mm"
-                  },
-                  {
-                    "number": 0.0,
-                    "unit": "Mm"
-                  }
+              "dimensionsnumber": [\
+                  100.0,
+                  0.0
+              ],
+              "dimensionsunit": [
+                  "Mm",
+                  "Mm"  
               ],
               "tolerance": 0.002,
               "feedrate": 300.0,
@@ -212,15 +208,13 @@ mod test {
         let json = r#"
         {
             "conversion": {
-              "dimensions": [
-                {
-                  "number": 100.0,
-                  "unit": "Px"
-                },
-                {
-                  "number": 100.0,
-                  "unit": "In"
-                }
+              "dimensionsnumber": [\
+                  100.0,
+                  100.0
+              ],
+              "dimensionsunit": [
+                  "Px",
+                  "In"  
               ],
               "tolerance": 0.002,
               "feedrate": 300.0,
