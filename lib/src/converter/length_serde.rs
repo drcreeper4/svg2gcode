@@ -38,7 +38,7 @@ impl<'de> Visitor<'de> for OptionalLengthArrayVisitor {
     type Value = [Option<LengthUnit>; 2];
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(formatter, "SVG dimension array")
+        write!(formatter, "SVG dimension unit array")
     }
 
     fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
@@ -94,7 +94,7 @@ where
 }
 
 #[derive(Serialize, Deserialize)]
-#[serde(remote = "LengthUnit")]
+//#[serde(remote = "LengthUnit")]
 enum LengthUnitDef {
     None,
     Em,
@@ -106,76 +106,4 @@ enum LengthUnitDef {
     Pt,
     Pc,
     Percent,
-}
-
-impl Serialize for LengthUnitDef {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut seq = serializer.serialize_seq(Some(1))?;
-        match *self {
-            inner_length_unit => {
-                match inner_length_unit {
-                    LengthUnitDef::None => LengthUnit::None,
-                    LengthUnitDef::Em => LengthUnit::Em,
-                    LengthUnitDef::Ex => LengthUnit::Ex,
-                    LengthUnitDef::Px => LengthUnit::Px,
-                    LengthUnitDef::In => LengthUnit::In,
-                    LengthUnitDef::Cm => LengthUnit::Cm,
-                    LengthUnitDef::Mm => LengthUnit::Mm,
-                    LengthUnitDef::Pt => LengthUnit::Pt,
-                    LengthUnitDef::Pc => LengthUnit::Pc,
-                    LengthUnitDef::Percent => LengthUnit::Percent,
-                
-                }
-                //None => None,
-            }
-        };
-        seq.end()
-    }
-}
-
-struct OptionalLengthDefArrayVisitor;
-impl<'de> Visitor<'de> for OptionalLengthDefArrayVisitor {
-    type Value = LengthUnitDef;
-
-    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(formatter, "SVG dimension array")
-    }
-
-    fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
-    where
-        A: SeqAccess<'de>,
-    {
-        let x = seq.next_element::<LengthUnit>()?;
-        Ok(
-            match x {
-                inner_length_unit => {
-                    match inner_length_unit {
-                        LengthUnit::None => LengthUnitDef::None,
-                        LengthUnit::Em => LengthUnitDef::Em,
-                        LengthUnit::Ex => LengthUnitDef::Ex,
-                        LengthUnit::Px => LengthUnitDef::Px,
-                        LengthUnit::In => LengthUnitDef::In,
-                        LengthUnit::Cm => LengthUnitDef::Cm,
-                        LengthUnit::Mm => LengthUnitDef::Mm,
-                        LengthUnit::Pt => LengthUnitDef::Pt,
-                        LengthUnit::Pc => LengthUnitDef::Pc,
-                        LengthUnit::Percent => LengthUnitDef::Percent,
-                    }
-                },
-                None => None,
-            },
-        )
-    }
-}
-
-impl<'de> Deserialize<'de> for LengthUnitDef {
-    fn deserialize<D>(deserializer: D) -> Result<LengthUnitDef, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        deserializer.deserialize_seq(OptionalLengthDefArrayVisitor)
-    }
 }
