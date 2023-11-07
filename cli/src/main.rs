@@ -10,7 +10,7 @@ use std::{
     path::PathBuf,
 };
 use structopt::StructOpt;
-use svgtypes::{Length, LengthListParser};
+use svgtypes::{LengthUnit, LengthListParser};
 
 use svg2gcode::{svg2program, Machine, Settings, SupportedFunctionality};
 
@@ -79,7 +79,9 @@ struct Opt {
     /// Useful for streaming g-code
     checksums: Option<bool>,
 }
-fn dimensions_parser(mut dimensions: [Option<Length>; 2], dimensions_str: Option<String>) -> [Option<Length>; 2] {
+fn dimensions_parser(dimensions_str: Option<String>) -> ([Option<f64>; 2], [Option<LengthUnit>; 2]) {
+    let mut dimensionsnumber: [Option<f64>; 2] = [None, None];
+    let mut dimensionsunit: [Option<LengthUnit>; 2] = [None, None];
     dimensions_str.unwrap()
         .split(',')
         .map(|dimension_str| {
@@ -95,9 +97,10 @@ fn dimensions_parser(mut dimensions: [Option<Length>; 2], dimensions_str: Option
         .take(2)
         .enumerate()
         .for_each(|(i, dimension_origin)| {
-            dimensions[i] = dimension_origin;
+            dimensionsnumber[i] = Some(dimension_origin.unwrap().number);
+            dimensionsunit[i] = Some(dimension_origin.unwrap().unit);
         });
-    dimensions
+    (dimensionsnumber, dimensionsunit)
 }
 
 fn main() -> io::Result<()> {
@@ -122,14 +125,17 @@ fn main() -> io::Result<()> {
             conversion.tolerance = opt.tolerance.unwrap_or(conversion.tolerance);
 
             if let dimensions_str = opt.dimensions {
-                dimensions_parser(conversion.dimensions, dimensions_str);
+                (conversion.dimensionsnumber, conversion.dimensionsunit) = dimensions_parser(dimensions_str);
             }
-            else if let dimensions_str = Some(format!("{:?} {:?}",
-                                                                  conversion.dimensions[0].as_ref().unwrap(),
-                                                                  conversion.dimensions[1].as_ref().unwrap())
+            else if let dimensions_str = Some(format!("{}{:?} {}{:?}",
+                                                                  conversion.dimensionsnumber[0].as_ref().unwrap(),
+                                                                  conversion.dimensionsunit[0].as_ref().unwrap(),
+                                                                  conversion.dimensionsnumber[1].as_ref().unwrap(),
+                                                                  conversion.dimensionsunit[1].as_ref().unwrap()
+                                                                    )
                                                              )
                                                         {
-                dimensions_parser(conversion.dimensions, dimensions_str);
+                (conversion.dimensionsnumber, conversion.dimensionsunit) = dimensions_parser(dimensions_str);
             }
         }
         {
