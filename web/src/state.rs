@@ -99,12 +99,12 @@ impl From<&Settings> for FormState {
     fn from(settings: &Settings) -> Self {
         Self {
             dimensionsnumber: [
-                Some(settings.conversion.dimensions[0].unwrap().number).map(Ok),
-                Some(settings.conversion.dimensions[1].unwrap().number).map(Ok),
+                settings.conversion.dimensionsnumber[0].map(Ok),
+                settings.conversion.dimensionsnumber[1].map(Ok),
             ],
             dimensionsunit: [
-                Some(settings.conversion.dimensions[0].unwrap().unit).map(Ok),
-                Some(settings.conversion.dimensions[1].unwrap().unit).map(Ok),
+                settings.conversion.dimensionsunit[0].map(Ok),
+                settings.conversion.dimensionsunit[1].map(Ok),
             ],
             tolerance: Ok(settings.conversion.tolerance),
             feedrate: Ok(settings.conversion.feedrate),
