@@ -55,7 +55,7 @@ const fn zero_origin() -> [Option<f64>; 2] {
 impl Default for ConversionConfig {
     fn default() -> Self {
         Self {
-            dimensionsnumber: [Some(100.0), Some(100.0)],
+            dimensionsnumber: [Some(0.0), Some(0.0)],
             dimensionsunit: [Some(LengthUnit::Mm), Some(LengthUnit::Mm)],
             tolerance: 0.002,
             feedrate: 300.0,
@@ -160,8 +160,8 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         }
 
         let dimensions_override = [
-            self.config.dimensionsnumber[0].map(|dim_x| length_to_mm(Length {number: dim_x, unit: self.config.dimensionsunit[0].unwrap()}, self.config.dpi, scale_w)),
-            self.config.dimensionsnumber[1].map(|dim_y| length_to_mm(Length {number: dim_y, unit: self.config.dimensionsunit[1].unwrap()}, self.config.dpi, scale_h)),
+            self.config.dimensionsnumber[0].map(|dim_x| length_to_mm(Length {number: dim_x, unit: self.config.dimensionsunit[0].unwrap_or(LengthUnit::None)}, self.config.dpi, scale_w)),
+            self.config.dimensionsnumber[1].map(|dim_y| length_to_mm(Length {number: dim_y, unit: self.config.dimensionsunit[1].unwrap_or(LengthUnit::None)}, self.config.dpi, scale_h)),
         ];
 
         match (dimensions_override, dimensions) {
@@ -402,6 +402,7 @@ fn length_to_mm(l: svgtypes::Length, dpi: f64, scale: Option<f64>) -> f64 {
 
     let dpi_scaling = dpi / DEFAULT_SVG_DPI;
     let length = match l.unit {
+        None => Length::new::<millimeter>(0.0),
         Cm => Length::new::<centimeter>(l.number),
         Mm => Length::new::<millimeter>(l.number),
         In => Length::new::<inch>(l.number),
@@ -443,8 +444,7 @@ mod test {
     #[cfg(feature = "serde")]
     fn serde_conversion_options_is_correct() {
         let default_struct = ConversionConfig::default();
-        let default_json = "{\"dimensionsnumber\":[null,null],\"dimensionsunit\":[null,null],
-                                   \"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
+        let default_json = "{\"dimensionsnumber\":[0.0,0.0],\"dimensionsunit\":[\"Mm\",\"Mm\"],\"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
 
         assert_eq!(
             serde_json::to_string(&default_struct).unwrap(),
@@ -460,12 +460,9 @@ mod test {
     #[cfg(feature = "serde")]
     fn serde_conversion_options_with_single_dimension_is_correct() {
         let mut r#struct = ConversionConfig::default();
-        r#struct.dimensions[0] = Some(Length {
-            number: 4.,
-            unit: LengthUnit::Mm,
-        });
-        let json = "{\"dimensionsnumber\":[100.0,null],\"dimensionsunit\":[\"Mm\",null],
-                           \"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
+        r#struct.dimensionsnumber[0] = Some(100.0);
+        r#struct.dimensionsunit[0] = Some(LengthUnit::Mm);
+        let json = "{\"dimensionsnumber\":[100.0,null],\"dimensionsunit\":[\"Mm\",null],\"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
 
         assert_eq!(serde_json::to_string(&r#struct).unwrap(), json);
         assert_eq!(
@@ -478,18 +475,11 @@ mod test {
     #[cfg(feature = "serde")]
     fn serde_conversion_options_with_both_dimensions_is_correct() {
         let mut r#struct = ConversionConfig::default();
-        r#struct.dimensions = [
-            Some(Length {
-                number: 4.,
-                unit: LengthUnit::Mm,
-            }),
-            Some(Length {
-                number: 10.5,
-                unit: LengthUnit::In,
-            }),
-        ];
-        let json = "{\"dimensionsnumber\":[10.0,1000.0],\"dimensionsunit\":[\"In\",\"Px\"],
-                           \"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
+        r#struct.dimensionsnumber[0] = Some(100.0);
+        r#struct.dimensionsunit[0] = Some(LengthUnit::In);
+        r#struct.dimensionsnumber[1] = Some(100.0);
+        r#struct.dimensionsunit[1] = Some(LengthUnit::Px);
+        let json = "{\"dimensionsnumber\":[100.0,100.0],\"dimensionsunit\":[\"In\",\"Px\"],\"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
 
         assert_eq!(serde_json::to_string(&r#struct).unwrap(), json);
         assert_eq!(

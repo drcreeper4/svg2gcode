@@ -72,18 +72,6 @@ macro_rules! gcode_input {
 }
 
 gcode_input! {
-    UnitX {
-        "Unit X",
-        "X-axis dimension unit type (Mm, In, etc.)",
-        dimensionsunit => 0,
-        settings.conversion.dimensionsunit => 0,
-    }
-    UnitY {
-        "Unit X",
-        "X-axis dimension unit type (Mm, In, etc.)",
-        dimensionsunit => 0,
-        settings.conversion.dimensionsunit => 1,
-    }
     ToolOnSequence {
         "Tool On Sequence",
         "G-Code for turning on the tool",

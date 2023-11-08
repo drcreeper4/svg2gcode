@@ -137,7 +137,7 @@ mod test {
         let json = r#"
         {
             "conversion": {
-              "dimensionsnumber": [\
+              "dimensionsnumber": [
                   100.0,
                   100.0
               ],
@@ -175,7 +175,7 @@ mod test {
         let json = r#"
         {
             "conversion": {
-              "dimensionsnumber": [\
+              "dimensionsnumber": [
                   100.0,
                   0.0
               ],
@@ -208,7 +208,7 @@ mod test {
         let json = r#"
         {
             "conversion": {
-              "dimensionsnumber": [\
+              "dimensionsnumber": [
                   100.0,
                   100.0
               ],
