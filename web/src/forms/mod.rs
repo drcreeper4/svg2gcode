@@ -43,6 +43,10 @@ pub fn settings_form() -> Html {
             .iter()
             .all(|opt| opt.as_ref().map_or(false, |r| r.is_err()))
         || form_state
+            .dimensionsunit
+            .iter()
+            .all(|opt| opt.as_ref().map_or(false, |r| r.is_err()))
+        || form_state
             .tool_on_sequence
             .as_ref()
             .map(Result::is_err)

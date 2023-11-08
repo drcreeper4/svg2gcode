@@ -1,5 +1,5 @@
 use paste::paste;
-use std::num::ParseFloatError;
+//use std::num::ParseFloatError;
 use yew::prelude::*;
 use yewdux::functional::{use_store, use_store_value};
 
@@ -39,22 +39,22 @@ macro_rules! length_input {
                                 default={app_state.$app_accessor $([$app_idx])?}
                                 parsed={form_state.$form_accessor $([$form_idx])?.clone()}
                                 oninput={oninput}
-                            >
-                                <DataList id="LengthUnit_list">
-                                    <Option value=None>None</Option>
-                                    <Option value=LengthUnit::Em>Em</Option>
-                                    <Option value=LengthUnit::Ex>Ex</Option>
-                                    // None,
-                                    // Em,
-                                    // Ex,
-                                    // Px,
-                                    // In,
-                                    // Cm,
-                                    // Mm,
-                                    // Pt,
-                                    // Pc,
-                                    // Percent,
-                            </DataList>
+                            />
+                            <Select id="LengthUnit_list">
+                                <Opt value=None>None</Opt>
+                                <Opt value=LengthUnit::Em>Em</Opt>
+                                <Opt value=LengthUnit::Ex>Ex</Opt>
+                                // None,
+                                // Em,
+                                // Ex,
+                                // Px,
+                                // In,
+                                // Cm,
+                                // Mm,
+                                // Pt,
+                                // Pc,
+                                // Percent,
+                            </Select>
                             // <Input<f64, ParseFloatError> label=$label desc=$desc
                             //     default={app_state.$app_accessor $([$app_idx])?}
                             //     parsed={form_state.$form_accessor $([$form_idx])?.clone()}
