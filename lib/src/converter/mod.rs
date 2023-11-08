@@ -55,8 +55,8 @@ const fn zero_origin() -> [Option<f64>; 2] {
 impl Default for ConversionConfig {
     fn default() -> Self {
         Self {
-            dimensionsnumber: [Some(0.0), Some(0.0)],
-            dimensionsunit: [Some(LengthUnit::Mm), Some(LengthUnit::Mm)],
+            dimensionsnumber: [None, None],
+            dimensionsunit: [None, None],
             tolerance: 0.002,
             feedrate: 300.0,
             dpi: 96.0,
@@ -444,7 +444,7 @@ mod test {
     #[cfg(feature = "serde")]
     fn serde_conversion_options_is_correct() {
         let default_struct = ConversionConfig::default();
-        let default_json = "{\"dimensionsnumber\":[0.0,0.0],\"dimensionsunit\":[\"Mm\",\"Mm\"],\"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
+        let default_json = "{\"dimensionsnumber\":[null,null],\"dimensionsunit\":[null,null],\"tolerance\":0.002,\"feedrate\":300.0,\"dpi\":96.0,\"origin\":[0.0,0.0]}";
 
         assert_eq!(
             serde_json::to_string(&default_struct).unwrap(),
