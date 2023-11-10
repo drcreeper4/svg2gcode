@@ -3,7 +3,7 @@ use std::{convert::TryInto, num::ParseFloatError};
 use svg2gcode::{
     ConversionConfig, MachineConfig, PostprocessConfig, Settings, SupportedFunctionality,
 };
-use svgtypes::Length;
+use svgtypes::{Length, LengthUnit};
 use thiserror::Error;
 use yewdux::store::Store;
 
@@ -11,7 +11,7 @@ use yewdux::store::Store;
 #[store]
 pub struct FormState {
     pub dimensionsnumber: [Option<Result<f64, ParseFloatError>>; 2],
-    pub dimensionsunit: [Option<Result<svgtypes::LengthUnit, ParseFloatError>>; 2],
+    pub dimensionsunit: [Option<Result<LengthUnit, LengthUnit>>; 2],
     pub tolerance: Result<f64, ParseFloatError>,
     pub feedrate: Result<f64, ParseFloatError>,
     pub origin: [Option<Result<f64, ParseFloatError>>; 2],
@@ -38,6 +38,8 @@ pub enum FormStateConversionError {
     Float(#[from] ParseFloatError),
     #[error("could not parse gcode: {0}")]
     GCode(String),
+    #[error("could not parse length unit: {0:?}")]
+    LengthUnit(LengthUnit),
 }
 
 impl<'a> TryInto<Settings> for &'a FormState {
@@ -51,8 +53,8 @@ impl<'a> TryInto<Settings> for &'a FormState {
                     self.dimensionsnumber[1].clone().transpose()?,
                 ],
                 dimensionsunit: [
-                    self.dimensionsunit[0].clone().transpose()?,
-                    self.dimensionsunit[1].clone().transpose()?,
+                    self.dimensionsunit[0].clone().transpose().map_err(FormStateConversionError::LengthUnit)?,
+                    self.dimensionsunit[1].clone().transpose().map_err(FormStateConversionError::LengthUnit)?,
                 ],
                 tolerance: self.tolerance.clone()?,
                 feedrate: self.feedrate.clone()?,

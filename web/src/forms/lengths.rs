@@ -2,6 +2,7 @@ use paste::paste;
 //use std::num::ParseFloatError;
 use yew::prelude::*;
 use yewdux::functional::{use_store, use_store_value};
+use svgtypes::LengthUnit;
 
 use crate::{
     state::{AppState, FormState},
@@ -21,45 +22,30 @@ macro_rules! length_input {
                 pub fn [<$name:snake:lower _input>]() -> Html {
                     let app_state = use_store_value::<AppState>();
                     let (form_state, form_dispatch) = use_store::<FormState>();
-                    let oninput = form_dispatch.reduce_mut_callback_with(|state, event: InputEvent| {
-                        let value = event.target_unchecked_into::<web_sys::HtmlInputElement>().value();
-                        let parsed = value;
-
-                        // Handle Option origins
-                        $(
-                            let _ = $app_idx;
-                            let parsed = if value.is_empty() { None } else { Some(parsed) };
-                        )?
-                        state.$form_accessor $([$form_idx])? = parsed;
-                    });
                     html! {
                         // unwrap_or(&Ok(0.)) is just a macro hack to make None a valid state
-                        <FormGroup success={form_state.$form_accessor $([$form_idx] .as_ref().unwrap_or(&Ok(0.)))?.is_ok()}>
-                            <Input<String, String> list="LengthUnit_list" label=$label desc=$desc
-                                default={app_state.$app_accessor $([$app_idx])?}
-                                parsed={form_state.$form_accessor $([$form_idx])?.clone()}
-                                oninput={oninput}
-                            />
-                            <Select id="LengthUnit_list">
-                                <Opt value=None>None</Opt>
-                                <Opt value=LengthUnit::Em>Em</Opt>
-                                <Opt value=LengthUnit::Ex>Ex</Opt>
-                                // None,
-                                // Em,
-                                // Ex,
-                                // Px,
-                                // In,
-                                // Cm,
-                                // Mm,
-                                // Pt,
-                                // Pc,
-                                // Percent,
-                            </Select>
-                            // <Input<f64, ParseFloatError> label=$label desc=$desc
+                        <FormGroup success={form_state.$form_accessor $([$form_idx] .as_ref().unwrap_or(&Ok(LengthUnit::None)))?.is_ok()}>
+                            // <Input<String, String> label=$label desc=$desc
                             //     default={app_state.$app_accessor $([$app_idx])?}
                             //     parsed={form_state.$form_accessor $([$form_idx])?.clone()}
                             //     oninput={oninput}
                             // />
+                            <Select label=$label desc=$desc
+                                children = {html! (
+                                    <>
+                                        <Opt value="None"/>
+                                        <Opt value="Em"/>
+                                        <Opt value="Ex"/>
+                                        <Opt value="Px"/>
+                                        <Opt value="In"/>
+                                        <Opt value="Cm"/>
+                                        <Opt value="Mm"/>
+                                        <Opt value="Pt"/>
+                                        <Opt value="Pc"/>
+                                        <Opt value="Percent"/>
+                                    </>
+                                )}
+                            />
                         </FormGroup>
                     }
                 }

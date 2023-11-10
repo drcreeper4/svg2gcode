@@ -25,7 +25,7 @@ macro_rules! form_input {
                         let value = event.target_unchecked_into::<web_sys::HtmlInputElement>().value();
                         let parsed = value.parse::<f64>();
 
-                        // Handle Option origins
+                        // Handle arrays
                         $(
                             let _ = $app_idx;
                             let parsed = if value.is_empty() { None } else { Some(parsed) };

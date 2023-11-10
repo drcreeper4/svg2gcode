@@ -22,9 +22,11 @@ use crate::{
 
 mod editors;
 mod inputs;
+mod lengths;
 
 use editors::*;
 use inputs::*;
+use lengths::*;
 
 #[function_component(SettingsForm)]
 pub fn settings_form() -> Html {
@@ -132,6 +134,18 @@ pub fn settings_form() -> Html {
                     </div>
                     <div class="column col-6 col-sm-12">
                         <OriginYInput/>
+                    </div>
+                    <div class="column col-6 col-sm-12">
+                        <DimensionsXInput/>
+                    </div>
+                    <div class="column col-6 col-sm-12">
+                        <DimensionsYInput/>
+                    </div>
+                    <div class="column col-6 col-sm-12">
+                        <UnitXInput/>
+                    </div>
+                    <div class="column col-6 col-sm-12">
+                        <UnitYInput/>
                     </div>
                     <div class="column col-12">
                         <FormGroup>

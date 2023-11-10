@@ -234,6 +234,10 @@ where
 #[derive(Properties, PartialEq, Clone)]
 pub struct SelectProps {
     #[prop_or_default]
+    pub label: &'static str,
+    #[prop_or_default]
+    pub desc: Option<&'static str>,
+    #[prop_or_default]
     pub children: Children,
     #[prop_or(false)]
     pub disabled: bool,
@@ -243,8 +247,29 @@ pub struct SelectProps {
 
 #[function_component(Select)]
 pub fn select(props: &SelectProps) -> Html {
+    let id = props.label.to_lowercase().replace(' ', "-");
+
     html! {
-        <select class={classes!("form-select")}>{ for props.children.iter() }</select>
+        <>
+            {
+                if ! props.label.is_empty() {
+                    html! {
+                        <label class="form-label" for={id.clone()}>{ props.label }</label>
+                    }
+                } else {
+                    html!()
+                }
+            }
+
+            <select class={classes!("form-select")}>{ for props.children.iter() }</select>
+            {
+                if let Some(desc) = props.desc {
+                    html! { <p class="form-input-hint">{ desc }</p> }
+                } else {
+                    html!()
+                }
+            }
+        </>
     }
 }
 
