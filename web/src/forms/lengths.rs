@@ -22,30 +22,24 @@ macro_rules! length_input {
                 pub fn [<$name:snake:lower _input>]() -> Html {
                     let app_state = use_store_value::<AppState>();
                     let (form_state, form_dispatch) = use_store::<FormState>();
+                    let children = html! (
+                        <>
+                            <Opt value={"None"} children={html!("None")}/>
+                            <Opt value={"Em"} children={html!("Em")}/>
+                            <Opt value={"Ex"} children={html!("Ex")}/>
+                            <Opt value={"Px"} children={html!("Px")}/>
+                            <Opt value={"In"} children={html!("In")}/>
+                            <Opt value={"Cm"} children={html!("Cm")}/>
+                            <Opt value={"Mm"} children={html!("Mm")}/>
+                            <Opt value={"Pt"} children={html!("Pt")}/>
+                            <Opt value={"Pc"} children={html!("Pc")}/>
+                            <Opt value={"Percent"} children={html!("Percent")}/>
+                        </>
+                    );
                     html! {
                         // unwrap_or(&Ok(0.)) is just a macro hack to make None a valid state
                         <FormGroup success={form_state.$form_accessor $([$form_idx] .as_ref().unwrap_or(&Ok(LengthUnit::None)))?.is_ok()}>
-                            // <Input<String, String> label=$label desc=$desc
-                            //     default={app_state.$app_accessor $([$app_idx])?}
-                            //     parsed={form_state.$form_accessor $([$form_idx])?.clone()}
-                            //     oninput={oninput}
-                            // />
-                            <Select label=$label desc=$desc
-                                children = {html! (
-                                    <>
-                                        <Opt value="None"/>
-                                        <Opt value="Em"/>
-                                        <Opt value="Ex"/>
-                                        <Opt value="Px"/>
-                                        <Opt value="In"/>
-                                        <Opt value="Cm"/>
-                                        <Opt value="Mm"/>
-                                        <Opt value="Pt"/>
-                                        <Opt value="Pc"/>
-                                        <Opt value="Percent"/>
-                                    </>
-                                )}
-                            />
+                            <Select label=$label desc=$desc children={children}/>
                         </FormGroup>
                     }
                 }
