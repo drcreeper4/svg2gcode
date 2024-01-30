@@ -124,17 +124,18 @@ fn main() -> io::Result<()> {
             conversion.feedrate = opt.feedrate.unwrap_or(conversion.feedrate);
             conversion.tolerance = opt.tolerance.unwrap_or(conversion.tolerance);
 
-            if let dimensions_str = opt.dimensions {
+            if opt.dimensions.is_some() {
+                let dimensions_str = opt.dimensions;
                 (conversion.dimensionsnumber, conversion.dimensionsunit) = dimensions_parser(dimensions_str);
             }
-            else if let dimensions_str = Some(format!("{}{:?} {}{:?}",
-                                                                  conversion.dimensionsnumber[0].as_ref().unwrap(),
-                                                                  conversion.dimensionsunit[0].as_ref().unwrap(),
-                                                                  conversion.dimensionsnumber[1].as_ref().unwrap(),
-                                                                  conversion.dimensionsunit[1].as_ref().unwrap()
-                                                                    )
-                                                             )
-                                                        {
+            else {
+                let dimensions_str = Some(format!("{}{:?} {}{:?}",
+                        conversion.dimensionsnumber[0].as_ref().unwrap(),
+                        conversion.dimensionsunit[0].as_ref().unwrap(),
+                        conversion.dimensionsnumber[1].as_ref().unwrap(),
+                        conversion.dimensionsunit[1].as_ref().unwrap()
+                    )
+                );
                 (conversion.dimensionsnumber, conversion.dimensionsunit) = dimensions_parser(dimensions_str);
             }
         }
