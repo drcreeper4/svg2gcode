@@ -49,18 +49,18 @@ macro_rules! form_input {
 }
 
 form_input! {
-DimensionsX {
-    "Dimension X",
-    "X-axis dimension for the print surface",
-    dimensionsnumber => 0,
-    settings.conversion.dimensionsnumber => 0,
-}
-DimensionsY {
-    "Dimension Y",
-    "Y-axis dimension for the print surface",
-    dimensionsnumber => 1,
-    settings.conversion.dimensionsnumber => 1,
-}
+    DimensionsX {
+        "Dimension X",
+        "X-axis dimension for the print surface",
+        dimensionsnumber => 0,
+        settings.conversion.dimensionsnumber => 0,
+    }
+    DimensionsY {
+        "Dimension Y",
+        "Y-axis dimension for the print surface",
+        dimensionsnumber => 1,
+        settings.conversion.dimensionsnumber => 1,
+    }
     Tolerance {
         "Tolerance",
         "Curve interpolation tolerance (mm)",
