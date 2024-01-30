@@ -1,7 +1,7 @@
 use paste::paste;
 //use std::num::ParseFloatError;
 use yew::prelude::*;
-use yewdux::functional::{use_store, use_store_value};
+use yewdux::functional::use_store;
 use svgtypes::LengthUnit;
 
 use crate::{
