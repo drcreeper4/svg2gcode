@@ -243,6 +243,8 @@ pub struct SelectProps {
     pub disabled: bool,
     #[prop_or(false)]
     pub multiple: bool,
+    #[prop_or_default]
+    pub onchange: Callback<Event>,
 }
 
 #[function_component(Select)]
@@ -261,7 +263,7 @@ pub fn select(props: &SelectProps) -> Html {
                 }
             }
 
-            <select class={classes!("form-select")}>{ for props.children.iter() }</select>
+            <select class={classes!("form-select")} onchange={props.onchange.clone()}>{ for props.children.iter() }</select>
             {
                 if let Some(desc) = props.desc {
                     html! { <p class="form-input-hint">{ desc }</p> }
