@@ -289,7 +289,11 @@ pub struct OptionProps {
 #[function_component(Opt)]
 pub fn option(props: &OptionProps) -> Html {
     html! {
-        <option value={props.value}>{ for props.children.iter() }</option>
+        <option
+            selected={if props.selected {true} else {false}}
+            disabled={if props.disabled {true} else {false}}
+            value={props.value}>{ for props.children.iter() }
+        </option>
     }
 }
 
