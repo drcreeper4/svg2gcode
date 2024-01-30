@@ -105,18 +105,20 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
 
         let mut transforms = vec![];
 
-        let view_box_attr = node.attribute("viewBox");
+        let root_element = node.document().root_element();
+        let view_box_attr = root_element.attribute("viewBox");
+        let width_attr = root_element.attribute("width");
+        let height_attr = root_element.attribute("height");
         let b: String;
-        let view_box_attr: Option<&str> = if view_box_attr == None && node.attribute("width") != None {
-            let string_list = vec!["0 0".to_string(), node.attribute("width").unwrap().to_string(), node.attribute("height").unwrap().to_string()];
+        let view_box_attr: Option<&str> = if view_box_attr == None && width_attr != None {
+            let string_list = vec!["0 0".to_string(), width_attr.unwrap().to_string(), height_attr.unwrap().to_string()];
             b = string_list.join(" ").chars()
                 .map(|x| match x {
                     'A'..='Z' => ' ', 
                     'a'..='z' => ' ',
                     _ => x
                 }).collect();
-            //b = format!("0 0 {:?} {:?}", node.attribute("width").unwrap(), node.attribute("height").unwrap());
-            //println!("guessed viewBox is: {:?}", Some(b.as_str()));
+            //b = format!("0 0 {:?} {:?}", width_attr.unwrap(), height_attr.unwrap());
             Some(b.as_str())
         }
         else {
@@ -129,13 +131,13 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         let scale_w = view_box.map(|view_box| view_box.w);
         let scale_h = view_box.map(|view_box| view_box.h);
         let dimensions = (
-            node.attribute("width")
+            width_attr
                 .map(LengthListParser::from)
                 .and_then(|mut parser| parser.next())
                 .transpose()
                 .expect("could not parse width")
                 .map(|width| length_to_mm(width, self.config.dpi, scale_w)),
-            node.attribute("height")
+            height_attr
                 .map(LengthListParser::from)
                 .and_then(|mut parser| parser.next())
                 .transpose()
