@@ -106,7 +106,7 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         let mut transforms = vec![];
 
         let view_box_attr = node.attribute("viewBox");
-        let mut b: String = "".to_string();
+        let b: String;
         let view_box_attr: Option<&str> = if view_box_attr == None && node.attribute("width") != None {
             let string_list = vec!["0 0".to_string(), node.attribute("width").unwrap().to_string(), node.attribute("height").unwrap().to_string()];
             b = string_list.join(" ").chars()
