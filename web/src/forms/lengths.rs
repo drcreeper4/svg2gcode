@@ -23,16 +23,15 @@ macro_rules! length_input {
                     let (form_state, form_dispatch) = use_store::<FormState>();
                     let children = html! (
                         <>
-                            <Opt value={"None"} children={html!("None")}/>
+                            <Opt value={"Mm"} selected=true children={html!("Mm")}/>
+                            <Opt value={"Cm"} children={html!("Cm")}/>
+                            <Opt value={"In"} children={html!("In")}/>
+                            <Opt value={"Px"} children={html!("Px")}/>
+                            <Opt value={"Percent"} children={html!("Percent")}/>
                             <Opt value={"Em"} children={html!("Em")}/>
                             <Opt value={"Ex"} children={html!("Ex")}/>
-                            <Opt value={"Px"} children={html!("Px")}/>
-                            <Opt value={"In"} children={html!("In")}/>
-                            <Opt value={"Cm"} children={html!("Cm")}/>
-                            <Opt value={"Mm"} children={html!("Mm")}/>
                             <Opt value={"Pt"} children={html!("Pt")}/>
                             <Opt value={"Pc"} children={html!("Pc")}/>
-                            <Opt value={"Percent"} children={html!("Percent")}/>
                         </>
                     );
                     let onchange = form_dispatch.reduce_mut_callback_with(|state, event: Event| {
