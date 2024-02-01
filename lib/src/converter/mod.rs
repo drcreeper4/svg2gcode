@@ -111,24 +111,25 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         let height_attr: Option<&str> = root_element.attribute("height");
         let width_attr_mm: f64 = length_to_mm(LengthListParser::from(width_attr.unwrap()).next().unwrap().unwrap(), self.config.dpi, Some(1.0));
         let height_attr_mm: f64 = length_to_mm(LengthListParser::from(height_attr.unwrap()).next().unwrap().unwrap(), self.config.dpi, Some(1.0));
-        print!("VB:{:?}, w:{:?}, h:{:?}, w_mm:{:?}, h_mm:{:?}", view_box_attr, width_attr, height_attr, width_attr_mm, height_attr_mm);
         let b: String;
         let view_box_attr: Option<&str> = if view_box_attr == None && width_attr != None {
             let string_list = vec!["0 0".to_string(), width_attr_mm.to_string(), height_attr_mm.to_string()];
             b = string_list.join(" ")
-                 .chars()
-                 .map(|x| match x {
-                     'A'..='Z' => ' ',
-                     'a'..='z' => ' ',
-                     _ => x
-                 }).collect();
-            //b = format!("0 0 {:?} {:?}", width_attr.unwrap(), height_attr.unwrap());
+                .chars()
+                .map(|x| match x {
+                    'A'..='Z' => ' ',
+                    'a'..='z' => ' ',
+                    _ => x
+                }).collect();
+            // b = format!("0 0 {:?} {:?}", width_attr.unwrap(), height_attr.unwrap());
             Some(b.as_str())
         }
         else {
             view_box_attr
         };
-        print!(", afterVB:{:?}\n", view_box_attr);
+        
+        // DEBUG print!
+        // if node == root_element {print!("VB:{:?}, w:{:?}, h:{:?}, w_mm:{:?}, h_mm:{:?}, afterVB:{:?}\n", root_element.attribute("viewBox"), width_attr, height_attr, width_attr_mm, height_attr_mm, view_box_attr);}
         let view_box = view_box_attr
             .map(ViewBox::from_str)
             .transpose()
