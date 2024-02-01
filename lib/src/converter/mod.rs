@@ -170,6 +170,7 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
             self.config.dimensionsnumber[0].map(|dim_x| length_to_mm(Length {number: dim_x, unit: self.config.dimensionsunit[0].unwrap_or(LengthUnit::Mm)}, self.config.dpi, scale_w)),
             self.config.dimensionsnumber[1].map(|dim_y| length_to_mm(Length {number: dim_y, unit: self.config.dimensionsunit[1].unwrap_or(LengthUnit::Mm)}, self.config.dpi, scale_h)),
         ];
+        if node == root_element {debug!("dimensions_override(mm): {:?}", dimensions_override)}
 
         match (dimensions_override, dimensions) {
             ([Some(dim_x), Some(dim_y)], _) if node.has_tag_name(SVG_TAG_NAME) => {
