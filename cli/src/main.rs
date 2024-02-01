@@ -128,16 +128,6 @@ fn main() -> io::Result<()> {
                 let dimensions_str = opt.dimensions;
                 (conversion.dimensionsnumber, conversion.dimensionsunit) = dimensions_parser(dimensions_str);
             }
-            else {
-                let dimensions_str = Some(format!("{}{:?} {}{:?}",
-                        conversion.dimensionsnumber[0].as_ref().unwrap(),
-                        conversion.dimensionsunit[0].as_ref().unwrap(),
-                        conversion.dimensionsnumber[1].as_ref().unwrap(),
-                        conversion.dimensionsunit[1].as_ref().unwrap()
-                    )
-                );
-                (conversion.dimensionsnumber, conversion.dimensionsunit) = dimensions_parser(dimensions_str);
-            }
         }
         {
             let machine = &mut settings.machine;
