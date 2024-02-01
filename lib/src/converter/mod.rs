@@ -113,23 +113,22 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         let height_attr_mm: f64 = length_to_mm(LengthListParser::from(height_attr.unwrap()).next().unwrap().unwrap(), self.config.dpi, Some(1.0));
         let b: String;
         let view_box_attr: Option<&str> = if view_box_attr == None && width_attr != None {
-            let string_list = vec!["0 0".to_string(), width_attr_mm.to_string(), height_attr_mm.to_string()];
-            b = string_list.join(" ")
-                .chars()
-                .map(|x| match x {
-                    'A'..='Z' => ' ',
-                    'a'..='z' => ' ',
-                    _ => x
-                }).collect();
-            // b = format!("0 0 {:?} {:?}", width_attr.unwrap(), height_attr.unwrap());
+            // let string_list = vec!["0 0".to_string(), width_attr_mm.to_string(), height_attr_mm.to_string()];
+            // b = string_list.join(" ")
+            //     .chars()
+            //     .map(|x| match x {
+            //         'A'..='Z' => ' ',
+            //         'a'..='z' => ' ',
+            //         _ => x
+            //     }).collect();
+            b = format!("0 0 {:?} {:?}", width_attr.unwrap(), height_attr.unwrap());
             Some(b.as_str())
         }
         else {
             view_box_attr
         };
+        if node == root_element {debug!("VB: {:?}, w: {:?}, h: {:?}, w_mm: {:?}, h_mm: {:?}, parsedVB: {:?}", root_element.attribute("viewBox"), width_attr, height_attr, width_attr_mm, height_attr_mm, view_box_attr);}
         
-        // DEBUG print!
-        // if node == root_element {print!("VB:{:?}, w:{:?}, h:{:?}, w_mm:{:?}, h_mm:{:?}, afterVB:{:?}\n", root_element.attribute("viewBox"), width_attr, height_attr, width_attr_mm, height_attr_mm, view_box_attr);}
         let view_box = view_box_attr
             .map(ViewBox::from_str)
             .transpose()
@@ -168,8 +167,8 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         }
 
         let dimensions_override = [
-            self.config.dimensionsnumber[0].map(|dim_x| length_to_mm(Length {number: dim_x, unit: self.config.dimensionsunit[0].unwrap_or(LengthUnit::None)}, self.config.dpi, scale_w)),
-            self.config.dimensionsnumber[1].map(|dim_y| length_to_mm(Length {number: dim_y, unit: self.config.dimensionsunit[1].unwrap_or(LengthUnit::None)}, self.config.dpi, scale_h)),
+            self.config.dimensionsnumber[0].map(|dim_x| length_to_mm(Length {number: dim_x, unit: self.config.dimensionsunit[0].unwrap_or(LengthUnit::Mm)}, self.config.dpi, scale_w)),
+            self.config.dimensionsnumber[1].map(|dim_y| length_to_mm(Length {number: dim_y, unit: self.config.dimensionsunit[1].unwrap_or(LengthUnit::Mm)}, self.config.dpi, scale_h)),
         ];
 
         match (dimensions_override, dimensions) {
