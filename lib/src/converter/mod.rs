@@ -109,10 +109,26 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         let view_box_attr: Option<&str> = root_element.attribute("viewBox");
         let width_attr: Option<&str> = root_element.attribute("width");
         let height_attr: Option<&str> = root_element.attribute("height");
-        let width_attr_mm: f64 = length_to_mm(LengthListParser::from(width_attr.unwrap()).next().unwrap().unwrap(), self.config.dpi, Some(1.0));
-        let height_attr_mm: f64 = length_to_mm(LengthListParser::from(height_attr.unwrap()).next().unwrap().unwrap(), self.config.dpi, Some(1.0));
+        let a: String;
         let b: String;
-        let view_box_attr: Option<&str> = if view_box_attr == None && width_attr != None {
+        let width_attr_mm: Option<&str> = if width_attr.is_some() {
+            a = format!("{:?}mm",
+                length_to_mm(LengthListParser::from(width_attr.unwrap()).next().unwrap().unwrap(), self.config.dpi, Some(1.0)));
+            Some(a.as_str())
+        }
+        else {
+            None
+        };
+        let height_attr_mm: Option<&str> = if height_attr.is_some() {
+            b = format!("{:?}mm",
+                length_to_mm(LengthListParser::from(height_attr.unwrap()).next().unwrap().unwrap(), self.config.dpi, Some(1.0)));
+            Some(b.as_str())
+        }
+        else {
+            None
+        };
+        let b: String;
+        let view_box_attr: Option<&str> = if view_box_attr == None && width_attr_mm != None && height_attr_mm != None {
             // let string_list = vec!["0 0".to_string(), width_attr_mm.to_string(), height_attr_mm.to_string()];
             // b = string_list.join(" ")
             //     .chars()
@@ -121,7 +137,7 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
             //         'a'..='z' => ' ',
             //         _ => x
             //     }).collect();
-            b = format!("0 0 {:?} {:?}", width_attr.unwrap(), height_attr.unwrap());
+            b = format!("0 0 {:?} {:?}", width_attr_mm.unwrap(), height_attr_mm.unwrap());
             Some(b.as_str())
         }
         else {
@@ -136,19 +152,20 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         let scale_w = view_box.map(|view_box| view_box.w);
         let scale_h = view_box.map(|view_box| view_box.h);
         let dimensions = (
-            width_attr
+            width_attr_mm
                 .map(LengthListParser::from)
                 .and_then(|mut parser| parser.next())
                 .transpose()
                 .expect("could not parse width")
-                .map(|width| length_to_mm(width, self.config.dpi, scale_w)),
-            height_attr
+                .map(|width| length_to_mm(width, self.config.dpi, Some(1.0))),
+            height_attr_mm
                 .map(LengthListParser::from)
                 .and_then(|mut parser| parser.next())
                 .transpose()
                 .expect("could not parse height")
-                .map(|height| length_to_mm(height, self.config.dpi, scale_h)),
+                .map(|height| length_to_mm(height, self.config.dpi, Some(1.0))),
         );
+        if node == root_element {debug!("dimensions: {:?}", dimensions)}
         let aspect_ratio = match (view_box, dimensions) {
             (_, (Some(ref width), Some(ref height))) => *width / *height,
             (Some(ref view_box), _) => view_box.w / view_box.h,
