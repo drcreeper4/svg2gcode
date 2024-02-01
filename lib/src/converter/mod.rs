@@ -106,9 +106,9 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         let mut transforms = vec![];
 
         let root_element = node.document().root_element();
-        let view_box_attr: Option<&str> = root_element.attribute("viewBox");
-        let width_attr: Option<&str> = root_element.attribute("width");
-        let height_attr: Option<&str> = root_element.attribute("height");
+        let view_box_attr: Option<&str> = node.attribute("viewBox");
+        let width_attr: Option<&str> = node.attribute("width");
+        let height_attr: Option<&str> = node.attribute("height");
         let a: String;
         let b: String;
         let width_attr_mm: Option<&str> = if width_attr.is_some() {
@@ -143,7 +143,7 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         else {
             view_box_attr
         };
-        if node == root_element {debug!("VB: {:?}, w: {:?}, h: {:?}, w_mm: {:?}, h_mm: {:?}, parsedVB: {:?}", root_element.attribute("viewBox"), width_attr, height_attr, width_attr_mm, height_attr_mm, view_box_attr);}
+        if node == root_element {debug!("VB: {:?}, w: {:?}, h: {:?}, w_mm: {:?}, h_mm: {:?}, parsedVB: {:?}", node.attribute("viewBox"), width_attr, height_attr, width_attr_mm, height_attr_mm, view_box_attr);}
         
         let view_box = view_box_attr
             .map(ViewBox::from_str)
