@@ -1,1 +1,47 @@
-<!doctype html><meta charset=utf-8><meta content="width=device-width,height=device-height,initial-scale=1,user-scalable=yes" name=viewport><meta content="Sameer Puri" name=author><title>svg2gcode</title><base href=/svg2gcode/><style>div.card{margin-top:1em}div.card div.card-image img{max-height:30em}div.card-container{margin-top:1em;margin-bottom:1em}div.modal-container{max-height:90vh!important}div.input-group,div.has-icon-right{flex:auto}</style><link href=/svg2gcode/spectre-e2e2e2c0d21340d3.css integrity=sha384-_OZ_ocNRtzXP0RWHT3BopzAJgewF_2qfu1ipURHLlTTi9j1ef38Xmy4Qln5TCZZf rel=stylesheet><link href=/svg2gcode/spectre-icons-717e0fc7a3af3947.css integrity=sha384-TOHL7KtzN3YMelhFEdqP57KkOqsUxdF_EOQIkUpD2ZhOGmsO305564AlEwotybHZ rel=stylesheet><script type=module>import a,*as b from"/svg2gcode/svg2gcode-web-46ec0056a93b07e6.js";a(`/svg2gcode/svg2gcode-web-46ec0056a93b07e6_bg.wasm`);window.wasmBindings=b</script><link as=fetch crossorigin href=/svg2gcode/svg2gcode-web-46ec0056a93b07e6_bg.wasm integrity=sha384-NhBxQU-FpYbuwqB6K2DshEGadyVrIfnSnSHwvbnQRejSuXjeq8SwxBctnVx6gHqy rel=preload type=application/wasm><link crossorigin href=/svg2gcode/svg2gcode-web-46ec0056a93b07e6.js integrity=sha384-icilZz9MMIVZ2TzpGQ5xrBpjlTf0ojVLsEhwG-2_AQOvkSHvTrVqv3FOewAU1L9b rel=modulepreload></head><body></body></html>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=yes">
+    <meta name="author" content="Sameer Puri">
+    <title>svg2gcode</title>
+    <base href="svg2gcode/" />
+    <style >div.card {
+  margin-top: 1em;
+}
+div.card div.card-image img {
+  max-height: 30em;
+}
+
+div.card-container {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+div.modal-container {
+  max-height: 90vh !important;
+}
+
+div.input-group,
+div.has-icon-right {
+  flex: auto;
+}
+</style>
+    <link rel="stylesheet" href="svg2gcode/spectre-82728572929a77d7.css" integrity="sha384&#x2D;ep8y1eeNEVrFR&#x2B;4aziE7r4UJfLFoHUNFqxQM5HBUf&#x2B;91gVFdbPDEH6EdMahiRYEZ"/>
+    <link rel="stylesheet" href="svg2gcode/spectre-icons-50b0c3320204c396.css" integrity="sha384&#x2D;fJg&#x2F;jdojMgjbbpH8Pb8Y8A8Xl0C9HUSlzHhKvMv8ikmWuv&#x2B;&#x2F;0y7MeFjFnaEwLnQV"/>
+    
+<script type="module">
+import init, * as bindings from 'svg2gcode/svg2gcode-web-b91ff616c85fd47d.js';
+const wasm = await init('svg2gcode/svg2gcode-web-b91ff616c85fd47d_bg.wasm');
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script>
+  
+<link rel="modulepreload" href="svg2gcode/svg2gcode-web-b91ff616c85fd47d.js" crossorigin=anonymous integrity="sha384-yMCsXHtlQnJ4vB0E6QoRSyBE9zc16ne6krrHWl0KK6SymLr82OJMvt43vOTAUhzs">
+<link rel="preload" href="svg2gcode/svg2gcode-web-b91ff616c85fd47d_bg.wasm" crossorigin=anonymous integrity="sha384-qz0KlsxgiXMgliblRrUEEwUnJtZBwFt9uUC93G18eMokennO+r6proFUtVvwO089" as="fetch" type="application/wasm"></head>
+</html>
