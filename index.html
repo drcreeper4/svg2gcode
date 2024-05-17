@@ -31,8 +31,8 @@ div.has-icon-right {
     <link rel="stylesheet" href="svg2gcode/spectre-icons-50b0c3320204c396.css" integrity="sha384&#x2D;fJg&#x2F;jdojMgjbbpH8Pb8Y8A8Xl0C9HUSlzHhKvMv8ikmWuv&#x2B;&#x2F;0y7MeFjFnaEwLnQV"/>
     
 <script type="module">
-import init, * as bindings from 'svg2gcode/svg2gcode-web-89895a1d343921e2.js';
-const wasm = await init('svg2gcode/svg2gcode-web-89895a1d343921e2_bg.wasm');
+import init, * as bindings from 'svg2gcode/svg2gcode-web-4175385dfc92de77.js';
+const wasm = await init('svg2gcode/svg2gcode-web-4175385dfc92de77_bg.wasm');
 
 
 window.wasmBindings = bindings;
@@ -42,6 +42,6 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 
 </script>
   
-<link rel="modulepreload" href="svg2gcode/svg2gcode-web-89895a1d343921e2.js" crossorigin=anonymous integrity="sha384-yMCsXHtlQnJ4vB0E6QoRSyBE9zc16ne6krrHWl0KK6SymLr82OJMvt43vOTAUhzs">
-<link rel="preload" href="svg2gcode/svg2gcode-web-89895a1d343921e2_bg.wasm" crossorigin=anonymous integrity="sha384-fxEShGDanaeAZOZmH5P+f5tPElegKqmrYSOVTChsuxLB1XAbqNHjbdHNGl01h5Cg" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="svg2gcode/svg2gcode-web-4175385dfc92de77.js" crossorigin=anonymous integrity="sha384-yMCsXHtlQnJ4vB0E6QoRSyBE9zc16ne6krrHWl0KK6SymLr82OJMvt43vOTAUhzs">
+<link rel="preload" href="svg2gcode/svg2gcode-web-4175385dfc92de77_bg.wasm" crossorigin=anonymous integrity="sha384-MYLEbqTqeifBYz6n0r+UObNfdJG0Wx/bVDIdK65ypiWPYWgJJ1UyKDsg6on2/Ad5" as="fetch" type="application/wasm"></head>
 </html>
