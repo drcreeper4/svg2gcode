@@ -461,6 +461,7 @@ fn length_to_mm(l: svgtypes::Length, dpi: f64, scale: Option<f64>) -> f64 {
             Length::new::<millimeter>(l.number)
         }
     };
+    info!("length: {:?}, l: {:?}, lmm: {:?}", length, l, length.get::<millimeter>());
 
     length.get::<millimeter>()
 }
