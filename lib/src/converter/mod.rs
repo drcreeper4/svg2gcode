@@ -2,7 +2,7 @@ use std::fmt::Debug;
 use std::str::FromStr;
 
 use g_code::emit::Token;
-use log::{debug, warn};
+use log::{debug, warn, info};
 use lyon_geom::{
     euclid::{default::Transform2D, Angle, Transform3D},
     point, vector, ArcFlags,
@@ -105,6 +105,8 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
 
         let mut transforms = vec![];
 
+        const DEFAULT_SVG_DPI: f64 = 96.;
+        let dpi_scaling = self.config.dpi / DEFAULT_SVG_DPI;
         let root_element = node.document().root_element();
         let view_box_attr: Option<&str> = node.attribute("viewBox");
         let width_attr: Option<&str> = node.attribute("width");
@@ -127,23 +129,27 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
         else {
             None
         };
-        let b: String;
-        let view_box_attr: Option<&str> = if view_box_attr == None && width_attr_mm != None && height_attr_mm != None {
-            // let string_list = vec!["0 0".to_string(), width_attr_mm.to_string(), height_attr_mm.to_string()];
-            // b = string_list.join(" ")
-            //     .chars()
-            //     .map(|x| match x {
-            //         'A'..='Z' => ' ',
-            //         'a'..='z' => ' ',
-            //         _ => x
-            //     }).collect();
-            b = format!("0 0 {:?} {:?}", width_attr_mm.unwrap(), height_attr_mm.unwrap());
-            Some(b.as_str())
+        let width_attr_px: Option<f64> = if width_attr_mm.is_some() {
+            Some(LengthListParser::from(width_attr_mm.unwrap()).next().unwrap().unwrap().number * dpi_scaling)
+        }
+        else {
+            None
+        };
+        let height_attr_px: Option<f64> = if height_attr_mm.is_some() {
+            Some(LengthListParser::from(height_attr_mm.unwrap()).next().unwrap().unwrap().number * dpi_scaling)
+        }
+        else {
+            None
+        };
+        let s: String;
+        let view_box_attr: Option<&str> = if view_box_attr.is_none() && width_attr_px.is_some() && height_attr_px.is_some() {
+            s = format!("0 0 {} {}", width_attr_px.unwrap(), height_attr_px.unwrap());
+            Some(s.as_str())
         }
         else {
             view_box_attr
         };
-        if node == root_element {debug!("VB: {:?}, w: {:?}, h: {:?}, w_mm: {:?}, h_mm: {:?}, parsedVB: {:?}", node.attribute("viewBox"), width_attr, height_attr, width_attr_mm, height_attr_mm, view_box_attr);}
+        if node == root_element {info!("VB: {:?}, w: {:?}, h: {:?}, w_mm: {:?}, h_mm: {:?}, w_px: {:?}, h_px: {:?}, parsedVB: {:?}", node.attribute("viewBox"), width_attr, height_attr, width_attr_mm, height_attr_mm, width_attr_px, height_attr_px, view_box_attr);}
         
         let view_box = view_box_attr
             .map(ViewBox::from_str)
@@ -165,7 +171,7 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
                 .expect("could not parse height")
                 .map(|height| length_to_mm(height, self.config.dpi, Some(1.0))),
         );
-        if node == root_element {debug!("dimensions: {:?}", dimensions)}
+        if node == root_element {info!("dimensions(mm): {:?}", dimensions)}
         let aspect_ratio = match (view_box, dimensions) {
             (_, (Some(ref width), Some(ref height))) => *width / *height,
             (Some(ref view_box), _) => view_box.w / view_box.h,
@@ -187,7 +193,7 @@ impl<'a, T: Turtle> visit::XmlVisitor for ConversionVisitor<'a, T> {
             self.config.dimensionsnumber[0].map(|dim_x| length_to_mm(Length {number: dim_x, unit: self.config.dimensionsunit[0].unwrap_or(LengthUnit::Mm)}, self.config.dpi, scale_w)),
             self.config.dimensionsnumber[1].map(|dim_y| length_to_mm(Length {number: dim_y, unit: self.config.dimensionsunit[1].unwrap_or(LengthUnit::Mm)}, self.config.dpi, scale_h)),
         ];
-        if node == root_element {debug!("dimensions_override(mm): {:?}", dimensions_override)}
+        if node == root_element {info!("dimensions_override(mm): {:?}", dimensions_override)}
 
         match (dimensions_override, dimensions) {
             ([Some(dim_x), Some(dim_y)], _) if node.has_tag_name(SVG_TAG_NAME) => {
