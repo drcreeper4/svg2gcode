@@ -439,7 +439,7 @@ fn length_to_mm(l: svgtypes::Length, dpi: f64, scale: Option<f64>) -> f64 {
         In => Length::new::<inch>(l.number),
         Pc => Length::new::<pica_computer>(l.number) / dpi_scaling,
         Pt => Length::new::<point_computer>(l.number) / dpi_scaling,
-        Px => Length::new::<inch>(l.number / dpi_scaling),
+        Px => Length::new::<millimeter>(l.number / dpi_scaling),
         Em => {
             warn!("Converting from em to millimeters assumes 1em = 16px");
             Length::new::<inch>(16. * l.number / dpi_scaling)
@@ -461,7 +461,6 @@ fn length_to_mm(l: svgtypes::Length, dpi: f64, scale: Option<f64>) -> f64 {
             Length::new::<millimeter>(l.number)
         }
     };
-    info!("length: {:?}, l: {:?}, lmm: {:?}", length, l, length.get::<millimeter>());
 
     length.get::<millimeter>()
 }
